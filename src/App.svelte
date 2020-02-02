@@ -1,7 +1,17 @@
 <script>
   import Header from "./UI/Header.svelte";
-  import MeetupItem from "./Meetups/MeetupItem.svelte";
-  const meetups = [
+  import MeetupGrid from "./Meetups/MeetupGrid.svelte";
+  import TextInput from "./UI/TextInput.svelte";
+  import Button from "./UI/Button.svelte";
+  let formData = {
+    title: "",
+    subtitle: "",
+    imageUrl: "",
+    description: "",
+    address: "",
+    contactEmail: ""
+  };
+  let meetups = [
     {
       id: "m1",
       title: "React Melbourne",
@@ -25,17 +35,78 @@
       contactEmail: "frontend@melbourne.com"
     }
   ];
+  function addMeetup() {
+    const newMeetup = {
+      id: Math.random().toString(),
+      ...formData
+    };
+    meetups = [...meetups, newMeetup];
+  }
+  function formHandler(event) {
+    formData[event.target.name] = event.target.value;
+    console.log(formData);
+  }
 </script>
 
 <style>
-  #meetups {
+  main {
     margin-top: 5rem;
+  }
+
+  form {
+    width: 30rem;
+    max-width: 90%;
+    margin: auto;
   }
 </style>
 
 <Header />
-<section id="meetups">
-  {#each meetups as meetup}
-    <MeetupItem cardData={meetup} />
-  {/each}
-</section>
+
+<main class="main">
+  <form on:submit|preventDefault={addMeetup}>
+    <TextInput
+      id="title"
+      label="Title"
+      type="text"
+      name="title"
+      value={formData.title}
+      on:input={formHandler} />
+    <TextInput
+      id="subtitle"
+      label="Subtitle"
+      type="text"
+      name="subtitle"
+      value={formData.subtitle}
+      on:input={formHandler} />
+    <TextInput
+      id="address"
+      label="Address"
+      type="text"
+      name="address"
+      value={formData.address}
+      on:input={formHandler} />
+    <TextInput
+      id="imageUrl"
+      label="Image URL"
+      type="text"
+      name="imageUrl"
+      value={formData.imageUrl}
+      on:input={formHandler} />
+    <TextInput
+      id="contactEmail"
+      label="E-Mail"
+      type="email"
+      name="contactEmail"
+      value={formData.contactEmail}
+      on:input={formHandler} />
+    <TextInput
+      id="description"
+      label="Description"
+      controlType="textarea"
+      name="description"
+      value={formData.description}
+      on:input={formHandler} />
+    <Button type="submit" caption="Save" />
+  </form>
+  <MeetupGrid {meetups} />
+</main>
